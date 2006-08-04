@@ -6,7 +6,7 @@ use constant TEST=> 0; # note that there are 2 testing levels TEST>1 will set th
 
 BEGIN {
 	use vars qw ($VERSION);
-    $VERSION= '0.02';
+    $VERSION= '0.03';
 }
 
 use Apache2::Const qw(:common);
@@ -129,38 +129,50 @@ At this time you simply need to load the module and add it to the PerlPostReadRe
 
 Apache2::xForwardedFor is really flexible and does some very odd things 
 
-=head1 VARIABLES
+=head1 DESCRIPTION
 
-=head2 xForwardedForAlternateHeaderName
+Set some variables in httpd.conf, and that's it
+
+=head2 Variables
+
+=head3 xForwardedForAlternateHeaderName
+
 should you want to receive the X-Forwarded-For info from the proxy server on another ip, the name of it would be the value of this variable.
 
-=head2 xForwardedForRequire
+=head3 xForwardedForRequire
+
 require the X-Forwarded-For header (or alternate name).  return FORBIDDEN otherwise
 
 Why would you do this?  So that by default you can use either access apache through the proxy or directly.  This is FALSE by default, if someone wants to patch to be TRUE by default, send it my way. 
 
-=head2 xForwardedForRequireHeaderName
+=head3 xForwardedForRequireHeaderName
+
 should you require an additional header, this is the name of it.
 
 Why would you do this?  Maybe you don't trust your gateway/proxy admin to be filtering headers correctly.  So you want to put a hash or an internal lan marking on internal requests.
 
-=head2 xForwardedForRequireHeaderValue
+=head3 xForwardedForRequireHeaderValue
+
 should you require an additional header (xForwardedForRequireHeaderName), this is the value.  this will be ignored if xForwardedForRequireHeaderName is not set.  if xForwardedForRequireHeader and this is UNDEF, the header value does not match, or the header is not sent, this will return FORBIDDEN
 
+=head3 xForwardedForAccept 
 
-head2= xForwardedForAccept 
 single item or list of IP addresses to accept
 
-head3= xForwardedForDeny
+=head3 xForwardedForDeny
+
 single item or list of IP addresses to deny
 
 =head1 BUGS/TODO
 
 This doesn't support AT ALL: 
+
 	IPV6
+
 	X-Forwarded-Host
 
 This doesn't fully support :
+
 	X-Forwarded-Server
 
 If you patch it to support those , let me know.
@@ -171,7 +183,7 @@ As illustrated in the example above, you can feign some support for X-Forwarded-
 
  Jonathan Vanasco - cpan@2xlp.com
  http://2xlp.com 
- 
+
 =head1 COPYRIGHT
 
 Copyright (c) 2006 Jonathan Vanasco. All rights reserved.
