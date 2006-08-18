@@ -1,12 +1,12 @@
 package Apache2::xForwardedFor;
 use strict;
 
-use constant DEBUG=> 0;
-use constant TEST=> 0; # note that there are 2 testing levels TEST>1 will set the required additional header
+use constant DEBUG=> $ENV{'xForwardedFor_DEBUG'} || 0;
+use constant TEST=> $ENV{'xForwardedFor_TEST'} || 0; # note that there are 2 testing levels TEST>1 will set the required additional header
 
 BEGIN {
 	use vars qw ($VERSION);
-    $VERSION= '0.03';
+    $VERSION= '0.04';
 }
 
 use Apache2::Const qw(:common);
@@ -127,11 +127,21 @@ to the B<remote_ip> connection property.
 
 At this time you simply need to load the module and add it to the PerlPostReadRequestHandler phase of your mod_perl-enabled httpd, and set a few variables.
 
-Apache2::xForwardedFor is really flexible and does some very odd things 
+Apache2::xForwardedFor is really flexible and does some very odd ( but neat! ) things 
+
+Set some variables in httpd.conf, and that's it
 
 =head1 DESCRIPTION
 
-Set some variables in httpd.conf, and that's it
+Apache2::xForwardedFor will let you do all this neat stuff
+
+  migrate X-Forwarded-For headers into $c->remote_ip for proxied requests
+  specify which reverse proxy servers your mod_perl app serves to using:
+     a list of IPs you allow
+     a list of IPs you prohibit
+     a secondary header of your choice, with a set value , inserted by the reverse proxy
+
+This allows you to limit which hosts Apache serves content to ( in a rather flexible manner ), with just a few simple settings.
 
 =head2 Variables
 
@@ -178,6 +188,18 @@ This doesn't fully support :
 If you patch it to support those , let me know.
 
 As illustrated in the example above, you can feign some support for X-Forwarded-Server by using the alternate header name 
+
+=head1 DEBUG INFO
+
+As this module is designed for use under mod_perl , it takes advantage of how mod_perl 'optimizes away' debug statements tied to false constants at compile time.
+
+In order to Debug for testing, you must set some envelope variables-- either on the commandline, or just in HTTPD.conf before this module is included .
+
+  xForwardedFor_DEBUG
+    0 (default) , 1 (print debug info)
+  
+  xForwardedFor_TEST
+    0 (default) , 1 ( require alternate header ) , 2 ( require alternate header and set it if not provided )
 
 =head1 AUTHOR
 
